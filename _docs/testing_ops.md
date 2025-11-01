@@ -1,12 +1,10 @@
-------
-
-layout: postlayout: post
-
-title: Testing & Operationstitle: Testing & Operations
-
-date: 2025-10-31date: 2025-09-28
-
-------
+---
+title: Testing & Operations
+layout: post
+category: docs
+permalink: /docs/testing_ops/
+date: 2025-09-28
+---
 
 
 
@@ -626,10 +624,12 @@ docker-compose -f docker-compose.bldg1.yml logs rasa | Select-String -Pattern "E
 ```
 
 **Test Container Resources**:
+{% raw %}
 ```powershell
 # Check memory/CPU usage
 docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 ```
+{% endraw %}
 
 ---
 
