@@ -7,26 +7,21 @@ date: 2025-10-08
 ---
 
 
-
 # Quick Start Guide# Quick Start Guide
-
 
 
 Get OntoBot up and running in **5 minutes**. This guide covers the essentials to start chatting with your building.Get OntoBot up and running in 30 minutes. This guide covers prerequisites, installation, and your first conversation with the chatbot.
 
 
-
 ---## Prerequisites
-
 
 
 ## Prerequisites### Required Software
 
 
-
 ### System Requirements| Software | Version | Purpose | Download |
 
-|----------|---------|---------|----------|
+ | ---------- | --------- | --------- | ---------- | 
 
 **Minimum**:| **Docker Desktop** | 20.10+ | Container runtime | [docker.com](https://www.docker.com/products/docker-desktop) |
 
@@ -37,7 +32,6 @@ Get OntoBot up and running in **5 minutes**. This guide covers the essentials to
 - 20 GB free disk space| **Node.js** | 16+ | Frontend development (optional) | [nodejs.org](https://nodejs.org/) |
 
 - Windows 10/11, macOS 11+, or Linux (Ubuntu 20.04+)| **Python** | 3.8+ | Scripts & notebooks (optional) | [python.org](https://www.python.org/) |
-
 
 
 **Recommended**:### System Requirements
@@ -55,30 +49,31 @@ Get OntoBot up and running in **5 minutes**. This guide covers the essentials to
 ### Required Software- OS: Windows 10/11, macOS 11+, Ubuntu 20.04+
 
 
+ | Software | Version | Download | **Recommended:**
 
-| Software | Version | Download |**Recommended:**
+ | ---------- | --------- | ---------- | - CPU: 8 cores
 
-|----------|---------|----------|- CPU: 8 cores
+ | **Docker Desktop** | 20.10+ | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop) | - RAM: 16 GB
 
-| **Docker Desktop** | 20.10+ | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop) |- RAM: 16 GB
+ | **Docker Compose** | 2.0+ | Included with Docker Desktop | - Disk: 50 GB SSD
 
-| **Docker Compose** | 2.0+ | Included with Docker Desktop |- Disk: 50 GB SSD
-
-| **Git** | 2.30+ | [git-scm.com](https://git-scm.com/) |- OS: Windows 11, macOS 13+, Ubuntu 22.04+
-
+ | **Git** | 2.30+ | [git-scm.com](https://git-scm.com/) | - OS: Windows 11, macOS 13+, Ubuntu 22.04+
 
 
 ### Docker Configuration### Docker Configuration
 
 
-
 **Increase Memory Allocation**:**Memory Allocation:**
 
-1. Open Docker Desktop```
+1. Open Docker Desktop
+
+```
 
 2. Settings → Resources → MemoryDocker Desktop → Settings → Resources → Memory: 8 GB minimum
 
-3. Set to **8 GB minimum** (16 GB recommended)```
+3. Set to **8 GB minimum** (16 GB recommended)
+
+```
 
 4. Click "Apply & Restart"
 
@@ -91,7 +86,6 @@ Get OntoBot up and running in **5 minutes**. This guide covers the essentials to
 2. Add: `C:\Users\<username>\Documents\GitHub`Add: C:\Users\<username>\Documents\GitHub\OntoBot
 
 3. Click "Apply & Restart"```
-
 
 
 ---**WSL2 Backend (Windows - Recommended):**
@@ -112,7 +106,7 @@ git clone https://github.com/suhasdevmane/OntoBot.git### Step 1: Clone Repositor
 
 cd OntoBot
 
-``````bash
+```bash
 
 # Clone with submodules
 
@@ -126,13 +120,17 @@ OntoBot/# Or if already cloned
 
 ├── docker-compose.bldg2.yml      # Building 2 (Office - 329 sensors)git submodule update --init --recursive
 
-├── docker-compose.bldg3.yml      # Building 3 (Data Center - 597 sensors)```
+├── docker-compose.bldg3.yml      # Building 3 (Data Center - 597 sensors)
+
+```
 
 ├── docker-compose.extras.yml     # Optional: NL2SPARQL + Ollama
 
 ├── rasa-bldg1/                   # Rasa models & actions (Building 1)**Repository Structure:**
 
-├── rasa-frontend/                # React chat interface```
+├── rasa-frontend/                # React chat interface
+
+```
 
 ├── microservices/                # Analytics serviceOntoBot/
 
@@ -154,25 +152,24 @@ OntoBot/# Or if already cloned
 
 ├── microservices/              # Analytics API
 
-| Building | Sensors | Database | Best For |├── Transformers/               # T5 NL2SPARQL models
+ | Building | Sensors | Database | Best For | ├── Transformers/               # T5 NL2SPARQL models
 
-|----------|---------|----------|----------|└── README.md
+ | ---------- | --------- | ---------- | ---------- | └── README.md
 
-| **Building 1 (ABACWS)** | 680 | MySQL | First-time users, development |```
+ | **Building 1 (ABACWS)** | 680 | MySQL | First-time users, development | ```
 
-| Building 2 (Office) | 329 | TimescaleDB | Time-series optimization |
+ | Building 2 (Office) | 329 | TimescaleDB | Time-series optimization | 
 
-| Building 3 (Data Center) | 597 | Cassandra | High-write throughput |### Step 1.5: Configure environment (.env)
-
+ | Building 3 (Data Center) | 597 | Cassandra | High-write throughput | ### Step 1.5: Configure environment (.env)
 
 
 ### Step 3: Start ServicesCompose files use environment variables for secrets and CORS. Create your local `.env` from the template and set the required values:
 
 
-
 **Quick Start** (core services only):```powershell
 
-```bashCopy-Item -Path .env.example -Destination .env
+```bash
+Copy-Item -Path .env.example -Destination .env
 
 docker-compose -f docker-compose.bldg1.yml up -d# Open .env and set values, especially:
 
@@ -182,12 +179,12 @@ docker-compose -f docker-compose.bldg1.yml up -d# Open .env and set values, espe
 
 **With AI Services** (adds NL2SPARQL + Ollama):# JWT_SECRET=change_me_in_prod
 
-```bash```
+```bash
+```
 
 docker-compose -f docker-compose.bldg1.yml -f docker-compose.extras.yml up -d
 
 ```Optional: Validate your chosen stack before starting:
-
 
 
 **What's Starting**:```powershell
@@ -200,7 +197,9 @@ docker-compose -f docker-compose.bldg1.yml -f docker-compose.extras.yml up -d
 
 - ✅ MySQL (sensor telemetry)# docker compose --env-file .env -f docker-compose.bldg3.yml -f docker-compose.extras.yml config
 
-- ✅ Analytics Service (30+ analysis types)```
+- ✅ Analytics Service (30+ analysis types)
+
+```
 
 - ✅ Decider Service (query classification)
 
@@ -256,8 +255,7 @@ docker-compose -f docker-compose.bldg1.yml up -d rasa_bldg1 action_server_bldg1 
 
 pwsh -File scripts/check-health.ps1docker-compose -f docker-compose.bldg1.yml up -d rasa_bldg1 action_server_bldg1 mysqlserver
 
-``````
-
+```
 
 
 **Bash** (Linux/macOS):**Option B: Full Stack (Recommended)**
@@ -272,7 +270,7 @@ bash scripts/check-health.shIncludes analytics, frontend, and all features:
 
 **Expected Output**:docker-compose -f docker-compose.bldg1.yml up -d
 
-``````
+```
 
 ✓ Rasa Core: OK (http://localhost:5005)
 
@@ -284,28 +282,28 @@ bash scripts/check-health.shIncludes analytics, frontend, and all features:
 
 ✓ Decider: OK (http://localhost:6009/health)
 
-✓ File Server: OK (http://localhost:8080/)```bash
+✓ File Server: OK (http://localhost:8080/)
+
+```bash
 
 ✓ Frontend: OK (http://localhost:3000)docker-compose -f docker-compose.bldg1.yml -f docker-compose.extras.yml up -d
 
-``````
-
+```
 
 
 ---### Step 4: Wait for Services
 
 
-
 ## First ConversationServices take **2-3 minutes** to fully initialize:
 
 
+### Open Chat Interface
 
-### Open Chat Interface```powershell
+```powershell
 
 # Check status
 
 Navigate to: **http://localhost:3000**docker ps
-
 
 
 You'll see the chat interface with a welcome message.# Expected output:
@@ -328,7 +326,7 @@ What is the temperature in room 5.01?```
 
 **Expected Response** (~500ms):
 
-``````bash
+```bash
 
 The current temperature in room 5.01 is 21.5°C # Windows
 
@@ -339,7 +337,6 @@ The current temperature in room 5.01 is 21.5°C # Windows
 # Linux/macOS
 
 ---curl http://localhost:5005/version
-
 
 
 ## Example Queries# Expected: {"version": "3.6.12", "minimum_compatible_version": "3.0.0"}
@@ -363,7 +360,6 @@ List all sensors in room 5.04
 ```![OntoBot Home Dashboard](../images/home-dashboard.png)
 
 
-
 ### Typo-Tolerant Queries (NEW)**Service Cards:**
 
 - 🤖 **Rasa Core**: Green (Ready)
@@ -379,7 +375,6 @@ List all sensors in room 5.04
 # Auto-corrected to: "NO2_Level_Sensor_5.09" ✓## Your First Conversation
 
 
-
 What is the NO2 Levl Sensor 5.09?### Chat Interface
 
 Show me air temp sensor 501
@@ -392,7 +387,9 @@ What's the co2 level 5.04?1. Click **"Chat"** in the top navigation
 
 **How it works**:
 
-- Fuzzy matching with 80% similarity threshold (configurable)```
+- Fuzzy matching with 80% similarity threshold (configurable)
+
+```
 
 - Handles spaces, underscores, case variationsWhat is the temperature in zone 5.04?
 
@@ -406,8 +403,9 @@ What's the co2 level 5.04?1. Click **"Chat"** in the top navigation
 
 The current temperature in zone 5.04 is 22.5°C (measured at 2025-01-08 14:30:00).
 
-### Time-Based Queries```
+### Time-Based Queries
 
+```
 
 
 ```### Example Questions
@@ -430,7 +428,9 @@ Show me the humidity in zone 5.15
 
 ```**Time-Based Queries:**
 
-Show me temperature trends for room 5.04```
+Show me temperature trends for room 5.04
+
+```
 
 ```What was the average temperature yesterday?
 
@@ -438,7 +438,9 @@ Show me CO2 levels for the last 3 hours
 
 **Response** (~2-3 seconds):What's the peak humidity today?
 
-- Natural language summary```
+- Natural language summary
+
+```
 
 - Line chart showing trend
 
@@ -452,13 +454,14 @@ Show me CO2 levels for the last 3 hours
 
 Detect anomalies in CO2 levels for the last 24 hoursWhat's the correlation between temperature and humidity?
 
-``````
-
+```
 
 
 **Response**:**Analytics Queries:**
 
-- Anomaly count and timestamps```
+- Anomaly count and timestamps
+
+```
 
 - Chart with anomalies highlightedShow me temperature trends for zone 5.04
 
@@ -498,7 +501,9 @@ Compare air quality between room 5.01 and room 5.10    "timestamp": "2025-01-08 
 
 **Response**:}
 
-- Side-by-side comparison```
+- Side-by-side comparison
+
+```
 
 - Statistical differences
 
@@ -541,7 +546,6 @@ the last week, rising from 20.5°C to 22.3°C. This represents a }
 - **JSON**: Raw data for programmatic accessNavigate to: **http://localhost:3000/settings**
 
 
-
 **3. Metadata**:#### Step 1: Select Building
 
 - Sensor name and UUID
@@ -555,9 +559,7 @@ the last week, rising from 20.5°C to 22.3°C. This represents a }
 - Confidence score (for predictions)- **Building 3**: 597 sensors (Data Center)
 
 
-
 ### Response TypesNo configuration needed - it just works!
-
 
 
 **Simple Answer**:#### Step 2: Configure Endpoints
@@ -568,7 +570,7 @@ User: What is the temperature?Default endpoints (usually don't need changes):
 
 Bot: 21.5°C
 
-``````yaml
+```yaml
 
 Rasa Core: http://localhost:5005
 
@@ -611,7 +613,6 @@ Bot: Here's the temperature trend analysis for room 5.01:Click **"Test All Endpo
 ```To switch buildings:
 
 
-
 **Error Response with Suggestion**:```powershell
 
 ```# Stop current building
@@ -631,17 +632,16 @@ Bot: I couldn't find sensor "XYZ". Did you mean:
 ---Start-Sleep -Seconds 120
 
 
-
 ## Quick Configuration# Refresh browser
 
 # Frontend auto-detects new building
 
-### 1. Adjust Typo Tolerance Threshold```
+### 1. Adjust Typo Tolerance Threshold
 
+```
 
 
 **Default**: 80% similarity## Training Your First Model
-
 
 
 **Too many false matches?** Increase threshold:### T5 Model Training Tab
@@ -662,7 +662,8 @@ action_server_bldg1:2. Click **"Add New Training Example"**
 
 **Too few matches?** Decrease threshold:
 
-```yaml```yaml
+```yaml
+```yaml
 
 action_server_bldg1:Question: "What is the temperature in zone 5.04?"
 
@@ -684,8 +685,9 @@ docker-compose -f docker-compose.bldg1.yml restart action_server_bldg1  }
 
 Notes: Basic temperature retrieval for single zone
 
-### 2. Enable/Disable AI Services```
+### 2. Enable/Disable AI Services
 
+```
 
 
 **Disable LLM Summarization** (faster responses):**Click "Add Example"**
@@ -704,7 +706,8 @@ action_server_bldg1:### Train Model
 
 **Disable Analytics** (simple queries only):
 
-```yaml```
+```yaml
+```
 
 action_server_bldg1:Epoch 1/3 - Loss: 0.245 (30%)
 
@@ -739,22 +742,20 @@ action_server_bldg1:   - Status changes to: 🟢 Running
 ```**Congratulations!** Your model is trained and ready.
 
 
-
 ---## Exploring Features
-
 
 
 ## Switching Buildings### Analytics
 
 
-
 ### Stop Current BuildingQuery types available:
-
 
 
 ```bash**Statistical Analysis:**
 
-docker-compose -f docker-compose.bldg1.yml down```
+docker-compose -f docker-compose.bldg1.yml down
+
+```
 
 ```Show me the average temperature for the last week
 
@@ -768,7 +769,9 @@ What's the standard deviation of CO2 levels?
 
 ```bash**Trend Detection:**
 
-docker-compose -f docker-compose.bldg2.yml up -d```
+docker-compose -f docker-compose.bldg2.yml up -d
+
+```
 
 ```Show me temperature trends for zone 5.04
 
@@ -776,7 +779,8 @@ Is the CO2 level increasing or decreasing?
 
 **Building 3** (Cassandra):What's the pattern in humidity over time?
 
-```bash```
+```bash
+```
 
 docker-compose -f docker-compose.bldg3.yml up -d
 
@@ -790,7 +794,9 @@ Find CO2 spikes in the last 24 hours
 
 The frontend automatically detects the active building:Are there any anomalies in air quality?
 
-1. Checks Rasa model name (bldg1, bldg2, or bldg3)```
+1. Checks Rasa model name (bldg1, bldg2, or bldg3)
+
+```
 
 2. Loads appropriate sensor list
 
@@ -807,13 +813,10 @@ What will the humidity be this evening?
 ---```
 
 
-
 ## Troubleshooting### Data Visualization
 
 
-
 ### Issue 1: Services Won't StartCharts are automatically generated:
-
 
 
 **Check logs**:- **Line Charts**: Time-series data
@@ -835,7 +838,6 @@ docker logs action_server_bldg1- **Heatmaps**: Multi-sensor patterns
 - Port conflicts → Check if ports 3000, 5005, 5055 are free- Download as PNG
 
 - Missing files → Re-clone repository- View data table
-
 
 
 **Solution**:### Health Monitoring
@@ -869,7 +871,6 @@ cat rasa-bldg1/actions/sensor_list.txt | wc -l- Slow responses (>2s)
 ```- Service down
 
 
-
 **If missing, regenerate**:## Common Issues & Solutions
 
 ```bash
@@ -880,7 +881,7 @@ grep 'rdfs:label' bldg1/trial/dataset/abacws.ttl | \
 
   cut -d'"' -f2 > rasa-bldg1/actions/sensor_list.txt**Symptom:**
 
-``````
+```
 
 Error response from daemon: Conflict. The container name "/rasa_bldg1" is already in use
 
@@ -890,12 +891,11 @@ Error response from daemon: Conflict. The container name "/rasa_bldg1" is alread
 
 docker-compose -f docker-compose.bldg1.yml restart action_server_bldg1**Solution:**
 
-``````powershell
+```powershell
 
 # Stop all containers
 
 ### Issue 3: Slow Responses (>5 seconds)docker-compose -f docker-compose.bldg1.yml down
-
 
 
 **Check resource usage**:# Remove orphaned containers
@@ -920,9 +920,12 @@ docker-compose -f docker-compose.bldg1.yml up -d
 
 **If database is slow**:```
 
-```bashError: bind: address already in use (port 5005)
+```bash
+Error: bind: address already in use (port 5005)
 
-# Check database health```
+# Check database health
+
+```
 
 docker exec -it mysqlserver mysql -uroot -ppassword -e "SHOW PROCESSLIST;"
 
@@ -943,15 +946,15 @@ docker logs frontend# Linux/macOS
 ```lsof -ti:5005 | xargs kill -9
 
 
-
 **Common causes**:# Or change port in docker-compose.yml
 
 - Port 3000 in use → Change to 3001 in docker-composeports:
 
 - Build failed → Rebuild: `docker-compose build frontend`  - "5006:5005"  # Use 5006 instead
 
-- CORS issues → Check ALLOWED_ORIGINS in .env```
+- CORS issues → Check ALLOWED_ORIGINS in .env
 
+```
 
 
 **Solution**:### Issue 3: Services Unhealthy
@@ -960,22 +963,23 @@ docker logs frontend# Linux/macOS
 
 docker-compose -f docker-compose.bldg1.yml restart frontend**Symptom:**
 
-``````
+```
 
 Container status: unhealthy (health check failed)
 
-### Issue 5: Analytics Not Working```
+### Issue 5: Analytics Not Working
 
+```
 
 
 **Test analytics endpoint**:**Solution:**
 
-```bash```bash
+```bash
+```bash
 
 curl http://localhost:6001/health# Check logs
 
 ```docker logs rasa_bldg1
-
 
 
 **If unhealthy**:# Common causes:
@@ -987,21 +991,17 @@ curl http://localhost:6001/health# Check logs
 docker logs microservices# 3. Memory exhausted → Increase Docker memory
 
 
-
 # Restart# Restart specific service
 
 docker-compose -f docker-compose.bldg1.yml restart microservicesdocker-compose -f docker-compose.bldg1.yml restart rasa_bldg1
 
-``````
-
+```
 
 
 📖 **[Full troubleshooting guide](troubleshooting.md)**### Issue 4: No Sensors in Dropdown
 
 
-
 ---**Symptom:** T5 Training GUI shows "No options" for sensors
-
 
 
 ## Next Steps**Solution:**
@@ -1022,8 +1022,9 @@ curl http://localhost:6001/api/t5/sensors
 
 # See T5_TRAINING_PORT_FIX.md for fix
 
-### Explore the System```
+### Explore the System
 
+```
 
 
 **Service Architecture**:### Issue 5: Frontend Won't Load
@@ -1041,7 +1042,6 @@ User → Frontend (3000) → Rasa (5005) → Action Server (5055)**Symptom:** Br
                  Fuseki (3030)    Analytics (6000)     Database (3306)# Check if container is running
 
 ```docker ps | grep rasa_frontend
-
 
 
 📖 **[Architecture Guide](architecture.md)**# If not running, check logs
@@ -1101,10 +1101,11 @@ docker-compose -f docker-compose.bldg1.yml down
 docker logs -f action_server_bldg1   - Close other applications
 
 
-
 # Restart single service**Solution:**
 
-docker-compose -f docker-compose.bldg1.yml restart rasa_bldg1```bash
+docker-compose -f docker-compose.bldg1.yml restart rasa_bldg1
+
+```bash
 
 # Monitor resource usage
 
@@ -1116,7 +1117,9 @@ pwsh -File scripts/check-health.ps1
 
 # Clean up (removes volumes!)# Docker Desktop → Settings → Resources → Memory: 16 GB
 
-docker-compose -f docker-compose.bldg1.yml down -v```
+docker-compose -f docker-compose.bldg1.yml down -v
+
+```
 
 ```
 
@@ -1126,27 +1129,29 @@ docker-compose -f docker-compose.bldg1.yml down -v```
 
 ### Learn More
 
-| Service | URL | Purpose |
+ | Service | URL | Purpose | 
 
-|---------|-----|---------|1. **[Frontend UI Guide](./frontend_ui.md)** - Complete UI reference
+ | --------- | ----- | --------- | 1. **[Frontend UI Guide](./frontend_ui.md)** - Complete UI reference
 
-| **Frontend** | http://localhost:3000 | Chat interface |2. **[T5 Training Guide](./t5_training_guide.md)** - Advanced model training
+ | **Frontend** | http://localhost:3000 | Chat interface | 2. **[T5 Training Guide](./t5_training_guide.md)** - Advanced model training
 
-| **Rasa Core** | http://localhost:5005 | Conversational AI |3. **[Backend Services](./backend_services.md)** - Technical deep dive
+ | **Rasa Core** | http://localhost:5005 | Conversational AI | 3. **[Backend Services](./backend_services.md)** - Technical deep dive
 
-| **Action Server** | http://localhost:5055 | Business logic |4. **[Multi-Building Guide](./multi_building.md)** - Working with different buildings
+ | **Action Server** | http://localhost:5055 | Business logic | 4. **[Multi-Building Guide](./multi_building.md)** - Working with different buildings
 
-| **Analytics** | http://localhost:6001 | Analysis service |5. **[API Reference](./api_reference.md)** - REST API documentation
+ | **Analytics** | http://localhost:6001 | Analysis service | 5. **[API Reference](./api_reference.md)** - REST API documentation
 
-| **Fuseki** | http://localhost:3030 | SPARQL endpoint |
+ | **Fuseki** | http://localhost:3030 | SPARQL endpoint | 
 
-| **File Server** | http://localhost:8080 | Artifact serving |### Advanced Topics
+ | **File Server** | http://localhost:8080 | Artifact serving | ### Advanced Topics
 
-| **Decider** | http://localhost:6009 | Query classifier |
+ | **Decider** | http://localhost:6009 | Query classifier | 
 
 **Add Custom Analytics:**
 
-### Quick Tests```python
+### Quick Tests
+
+```python
 
 # microservices/blueprints/custom_analytics.py
 
@@ -1188,7 +1193,9 @@ curl http://localhost:6001/health        # Your custom logic
 
 **Add Training Examples:**
 
-## Summary```json
+## Summary
+
+```json
 
 // Transformers/t5_base/training/bldg1/correlation_fixes.json
 
@@ -1244,12 +1251,13 @@ Show me temperature trends for the last week### Essential Commands
 
 Detect anomalies in CO2 levels
 
-Compare air quality between different rooms```powershell
+Compare air quality between different rooms
+
+```powershell
 
 Predict humidity for the next 2 hours# Start Building 1
 
 ```docker-compose -f docker-compose.bldg1.yml up -d
-
 
 
 ---# Stop all services
@@ -1276,17 +1284,17 @@ docker system prune -f
 
 ### Key URLs
 
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:3000 |
-| Chat | http://localhost:3000/chat |
-| Settings | http://localhost:3000/settings |
-| Health | http://localhost:3000/health |
-| Rasa Core | http://localhost:5005 |
-| Analytics | http://localhost:6001 |
-| File Server | http://localhost:8080 |
-| Fuseki | http://localhost:3030 |
-| ThingsBoard | http://localhost:8082 |
+ | Service | URL | 
+ | --------- | ----- | 
+ | Frontend | http://localhost:3000 | 
+ | Chat | http://localhost:3000/chat | 
+ | Settings | http://localhost:3000/settings | 
+ | Health | http://localhost:3000/health | 
+ | Rasa Core | http://localhost:5005 | 
+ | Analytics | http://localhost:6001 | 
+ | File Server | http://localhost:8080 | 
+ | Fuseki | http://localhost:3030 | 
+ | ThingsBoard | http://localhost:8082 | 
 
 ### Quick Tests
 

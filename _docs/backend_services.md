@@ -7,21 +7,18 @@ date: 2025-10-08
 ---
 
 
-
 # Backend Services Reference# Backend Services Documentation
-
 
 
 ## Service OverviewComplete reference for all OntoBot backend services, their APIs, configuration, and integration patterns.
 
 
+OntoBot consists of **7 core services** and **3 optional services** working together to deliver conversational AI for smart buildings.
 
-OntoBot consists of **7 core services** and **3 optional services** working together to deliver conversational AI for smart buildings.## Service Overview
 
-
+### Service Map
 
 ### Service MapOntoBot's backend consists of multiple microservices, each responsible for specific functionality:
-
 
 
 ```| Service | Port | Purpose | Health Check |
@@ -168,13 +165,22 @@ OntoBot consists of **7 core services** and **3 optional services** working toge
 
 └─────────────────────────────────────────────────────────────────────────┘
 
-```{
-
-  "model_file": "/app/models/20250108-123045-ancient-dust.tar.gz"
-
-## Core Services}
-
 ```
+
+"model_file": "/app/models/20250108-123045-ancient-dust.tar.gz"
+
+### Services at a glance
+
+| Service | Port | Purpose | Health Check |
+|---------|------|---------|--------------|
+| Rasa Core | 5005 | Conversational AI engine | GET /version |
+| Action Server | 5055 | Custom action logic | GET /health |
+| Duckling | 8000 | Entity extraction | GET / (HTML) |
+| Analytics Microservices | 6001→6000 | Time-series analytics | GET /health |
+| Decider Service | 6009 | Analytics type selection | GET /health |
+| File Server | 8080 | Artifact storage & management | GET /health |
+| NL2SPARQL (optional) | 6005 | NL→SPARQL translation | GET /health |
+| Ollama (optional) | 11434 | Local LLM summarization | GET / |
 
 ### 1. Rasa Core
 
@@ -238,7 +244,9 @@ POST http://localhost:5005/webhooks/rest/webhook  - name: TEDPolicy
 
 # Model loading
 
-POST http://localhost:5005/model```yaml
+POST http://localhost:5005/model
+
+```yaml
 
 {services:
 
@@ -276,12 +284,13 @@ pipeline:      - "*"
 
     epochs: 100      retries: 5
 
-  - name: EntitySynonymMapper```
+  - name: EntitySynonymMapper
+
+```
 
   - name: ResponseSelector
 
     epochs: 100## 2. Action Server
-
 
 
 policies:**Port**: 5055  
@@ -404,15 +413,18 @@ POST http://localhost:5055/webhook
 
 - `action_process_timeseries`: Data fetch        return []
 
-- `action_reset_all_slots`: State reset```
+- `action_reset_all_slots`: State reset
 
+```
 
 
 **Environment Variables**:### Environment Variables
 
 ```bash
 
-# Service URLs```bash
+# Service URLs
+
+```bash
 
 NL2SPARQL_URL=http://nl2sparql:6005/nl2sparql# Database connections
 
@@ -446,7 +458,9 @@ SENSOR_LIST_RELOAD_SEC=300
 
 DB_HOST=mysqlserverOLLAMA_URL=http://ollama:11434/api/generate
 
-DB_NAME=telemetry```
+DB_NAME=telemetry
+
+```
 
 DB_USER=root
 
@@ -485,8 +499,9 @@ action_server_bldg1:
 ```### Architecture
 
 
+**See Also**: [Action Server Architecture](action_server_architecture.md)
 
-**See Also**: [Action Server Architecture](action_server_architecture.md)```
+```
 
 Flask App (app.py)
 
@@ -506,7 +521,9 @@ Flask App (app.py)
 
 #### Run Analytics
 
-**Technology**: Apache Jena Fuseki 4.7.0```http
+**Technology**: Apache Jena Fuseki 4.7.0
+
+```http
 
 POST http://localhost:6001/analytics/run
 
@@ -536,7 +553,9 @@ GET http://localhost:3030/$/ping}
 
 POST http://localhost:3030/trial/sparql**Response:**
 
-Content-Type: application/sparql-query```json
+Content-Type: application/sparql-query
+
+```json
 
 {
 
@@ -572,7 +591,7 @@ Content-Type: text/turtle    "max": 23.1,
 
 **Dataset Structure**:}
 
-``````
+```
 
 bldg1/trial/dataset/
 
@@ -673,7 +692,6 @@ fuseki-db:     "metric": "avg"
 ```   ```
 
 
-
 ---6. **`aggregate_sensor_data`**: Statistical aggregation
 
    ```json
@@ -691,7 +709,6 @@ fuseki-db:     "metric": "avg"
    }
 
 **Technology**: Flask 3.0, Python 3.10, scikit-learn, pandas   ```
-
 
 
 **Key Responsibilities**:### UK Defaults & Units
@@ -744,7 +761,9 @@ Content-Type: application/json**Humidity:**
 
       ]### Health Check
 
-    }```http
+    }
+
+```http
 
   ],GET http://localhost:6001/health
 
@@ -754,7 +773,9 @@ Content-Type: application/json**Humidity:**
 
     "threshold": 2.0**Response:**
 
-  }```json
+  }
+
+```json
 
 }{
 
@@ -783,7 +804,6 @@ DESCRIPTIVE = [**Container**: `decider_service`
     "outlier_detection", "data_quality", "timeseries_analysis"
 
 ]### Purpose
-
 
 
 DIAGNOSTIC = [Determines:
@@ -824,7 +844,7 @@ REAL_TIME = [
 
 ]#### Decide
 
-``````http
+```http
 
 POST http://localhost:6009/decide
 
@@ -875,9 +895,7 @@ microservices:{
 **Port**: 6009 (host & internal)- `null`: No analytics needed (TTL query only)
 
 
-
 **Technology**: Flask 3.0, Python 3.10### Training
-
 
 
 **Key Responsibilities**:Located in: `decider-service/data/`
@@ -886,7 +904,9 @@ microservices:{
 
 - Recommend appropriate analysis type**Training Data Generation:**
 
-- Confidence scoring for recommendations```bash
+- Confidence scoring for recommendations
+
+```bash
 
 - Extensible rule-based logiccd decider-service/data
 
@@ -898,13 +918,17 @@ python build_decider_training_direct.py
 
 # Health check**Model Training:**
 
-GET http://localhost:6009/health```bash
+GET http://localhost:6009/health
+
+```bash
 
 cd decider-service
 
 # Decide analyticspython train.py
 
-POST http://localhost:6009/decide```
+POST http://localhost:6009/decide
+
+```
 
 Content-Type: application/json
 
@@ -933,14 +957,14 @@ Content-Type: application/json
 ```DECIDER_LABEL_MODEL_PATH=model/label_model.pkl
 
 
-
 **Internal URL**: `http://decider-service:6009`# Feature settings
 
 MAX_FEATURES=1000
 
 **Decision Logic**:MIN_DF=1
 
-```pythonMAX_DF=0.9
+```python
+MAX_DF=0.9
 
 KEYWORD_MAPPINGS = {```
 
@@ -998,22 +1022,25 @@ decider-service:- API for Rasa management
 
 └── static/              ← Web assets
 
-**Port**: 8080 (host & internal)```
+**Port**: 8080 (host & internal)
 
+```
 
 
 **Technology**: Python http.server### API Reference
 
 
-
 **Key Responsibilities**:#### Serve Artifact
 
-- Serve generated charts (PNG)```http
+- Serve generated charts (PNG)
+
+```http
 
 - Serve data exports (CSV, JSON)GET http://localhost:8080/artifacts/trend_12345.png
 
-- Provide URLs for frontend attachment display```
+- Provide URLs for frontend attachment display
 
+```
 
 
 **Endpoints**:**Response**: Binary file (image, CSV, JSON, etc.)
@@ -1056,13 +1083,13 @@ shared_data/artifacts/      "mtime": 1704709845,
 
       └── 20251031_130000_chart.png}
 
-``````
-
+```
 
 
 **Docker Compose**:#### Train Model (Job-based)
 
-```yaml```http
+```yaml
+```http
 
 http_server:POST http://localhost:8080/api/rasa/train_job2
 
@@ -1078,7 +1105,9 @@ http_server:POST http://localhost:8080/api/rasa/train_job2
 
   volumes:**Response:**
 
-    - ./rasa-bldg1/shared_data:/data```json
+    - ./rasa-bldg1/shared_data:/data
+
+```json
 
   networks:{
 
@@ -1096,12 +1125,15 @@ http_server:POST http://localhost:8080/api/rasa/train_job2
 
 #### Get Training Status
 
-**Purpose**: User interface```http
+**Purpose**: User interface
+
+```http
 
 GET http://localhost:8080/api/rasa/train_job2/{jobId}/status
 
-**Port**: 3000 (host), 3000 (internal)```
+**Port**: 3000 (host), 3000 (internal)
 
+```
 
 
 **Technology**: React 18, TypeScript, Material-UI**Response:**
@@ -1122,29 +1154,33 @@ GET http://localhost:8080/api/rasa/train_job2/{jobId}/status
 
 **Endpoints**:}
 
-```bash```
+```bash
+```
 
 # Access UI
 
 GET http://localhost:3000#### Start Rasa Server
 
-``````http
+```http
 
 POST http://localhost:8080/api/rasa/start
 
 **Internal URL**: `http://frontend:3000`Content-Type: application/json
 
 
-
 **Key Features**:{}
 
-- Real-time message streaming```
+- Real-time message streaming
+
+```
 
 - Image/chart inline display
 
 - CSV table rendering#### Stop Rasa Server
 
-- Markdown formatting support```http
+- Markdown formatting support
+
+```http
 
 - Mobile-responsive designPOST http://localhost:8080/api/rasa/stop
 
@@ -1164,13 +1200,15 @@ frontend:```
 
   environment:GET http://localhost:8080/health
 
-    - REACT_APP_RASA_URL=http://localhost:5005```
+    - REACT_APP_RASA_URL=http://localhost:5005
+
+```
 
   networks:
 
     - ontobot_network**Response:**
 
-``````json
+```json
 
 {
 
@@ -1215,14 +1253,15 @@ CREATE TABLE telemetry (
 ```Translates natural language questions to SPARQL queries using fine-tuned T5 model.
 
 
-
 **Docker Compose**:### API Reference
 
 ```yaml
 
 mysqlserver:#### Translate Question
 
-  image: mysql:8.0```http
+  image: mysql:8.0
+
+```http
 
   environment:POST http://localhost:6005/nl2sparql
 
@@ -1236,7 +1275,9 @@ mysqlserver:#### Translate Question
 
   volumes:}
 
-    - mysql_data:/var/lib/mysql```
+    - mysql_data:/var/lib/mysql
+
+```
 
 ```
 
@@ -1264,7 +1305,9 @@ CREATE TABLE telemetry (### Model Configuration
 
   sensor_uuid UUID NOT NULL,**Environment Variables:**
 
-  value DOUBLE PRECISION```bash
+  value DOUBLE PRECISION
+
+```bash
 
 );MODEL_PATH=/app/checkpoint-3
 
@@ -1272,8 +1315,7 @@ DEVICE=cuda  # or cpu
 
 SELECT create_hypertable('telemetry', 'time');MAX_LENGTH=512
 
-``````
-
+```
 
 
 **Docker Compose**:### Query Log
@@ -1288,7 +1330,9 @@ timescaledb:The service maintains a log of recent translations:
 
     POSTGRES_PASSWORD: passwordGET http://localhost:6005/
 
-    POSTGRES_DB: telemetry```
+    POSTGRES_DB: telemetry
+
+```
 
   ports:
 
@@ -1306,7 +1350,9 @@ timescaledb:The service maintains a log of recent translations:
 
 ### Health Check
 
-**Port**: 9042```http
+**Port**: 9042
+
+```http
 
 GET http://localhost:6005/health
 
@@ -1361,9 +1407,7 @@ cassandra:
 ```- Context-aware recommendations
 
 
-
 ---### API Reference
-
 
 
 ## Optional Services#### Generate Completion
@@ -1445,16 +1489,15 @@ nl2sparql:```json
 ---```
 
 
-
 ### Ollama (LLM)### Auto-Pull Configuration
-
 
 
 **Purpose**: Response summarization and natural language generationModels are automatically pulled on container start:
 
 
+**Port**: 11434
 
-**Port**: 11434```yaml
+```yaml
 
 services:
 
@@ -1516,12 +1559,11 @@ ollama:**Container**: `duckling_server_bldg1`
 
 #### Parse Text
 
-``````http
+```http
 
 User → Frontend → Rasa → Action Server → Fuseki → Action Server → Rasa → FrontendPOST http://localhost:8000/parse
 
 ```Content-Type: application/json
-
 
 
 Example: "List all sensors in room 5.01"{
@@ -1534,7 +1576,9 @@ Example: "List all sensors in room 5.01"{
 
 ```}
 
-User → Frontend → Rasa → Action Server → Fuseki → Database → Decider → Analytics → HTTP Server → Action Server → Rasa → Frontend```
+User → Frontend → Rasa → Action Server → Fuseki → Database → Decider → Analytics → HTTP Server → Action Server → Rasa → Frontend
+
+```
 
 ```
 
@@ -1626,7 +1670,9 @@ foreach ($svc in $services) {- `duration`: Time spans
 
     }
 
-}```
+}
+
+```
 
 ```User: "Show me the temperature trend"
 
@@ -1636,23 +1682,23 @@ foreach ($svc in $services) {- `duration`: Time spans
 
   ↓
 
-| Service | Health Check Latency | Query Latency |Action Server: ActionGetTrend
+ | Service | Health Check Latency | Query Latency | Action Server: ActionGetTrend
 
-|---------|---------------------|---------------|  ↓
+ | --------- | --------------------- | --------------- | ↓
 
-| Rasa    | < 50 ms             | 200-500 ms    |Decider Service: "analyze_sensor_trend"
+ | Rasa | < 50 ms | 200-500 ms | Decider Service: "analyze_sensor_trend"
 
-| Action Server | < 20 ms       | 1-3 seconds   |  ↓
+ | Action Server | < 20 ms | 1-3 seconds | ↓
 
-| Fuseki  | < 10 ms             | 50-200 ms     |Analytics Microservices: Run analysis
+ | Fuseki | < 10 ms | 50-200 ms | Analytics Microservices: Run analysis
 
-| Analytics | < 30 ms           | 500 ms - 2s   |  ↓
+ | Analytics | < 30 ms | 500 ms - 2s | ↓
 
-| Decider | < 20 ms             | < 100 ms      |Action Server: Format response + artifact
+ | Decider | < 20 ms | < 100 ms | Action Server: Format response + artifact
 
-| NL2SPARQL | < 50 ms           | 300-800 ms    |  ↓
+ | NL2SPARQL | < 50 ms | 300-800 ms | ↓
 
-| Ollama  | < 100 ms            | 2-5 seconds   |Rasa: Send to user
+ | Ollama | < 100 ms | 2-5 seconds | Rasa: Send to user
 
 ```
 
@@ -1668,33 +1714,33 @@ foreach ($svc in $services) {- `duration`: Time spans
 
   ↓
 
-| Service | Host Port | Container Port | Protocol |NL2SPARQL: Translate to SPARQL
+ | Service | Host Port | Container Port | Protocol | NL2SPARQL: Translate to SPARQL
 
-|---------|-----------|----------------|----------|  ↓
+ | --------- | ----------- | ---------------- | ---------- | ↓
 
-| Frontend | 3000 | 3000 | HTTP |Query Fuseki: Execute SPARQL
+ | Frontend | 3000 | 3000 | HTTP | Query Fuseki: Execute SPARQL
 
-| Rasa Core | 5005 | 5005 | HTTP |  ↓
+ | Rasa Core | 5005 | 5005 | HTTP | ↓
 
-| Action Server | 5055 | 5055 | HTTP |Parse Results: Extract sensor list
+ | Action Server | 5055 | 5055 | HTTP | Parse Results: Extract sensor list
 
-| Fuseki | 3030 | 3030 | HTTP |  ↓
+ | Fuseki | 3030 | 3030 | HTTP | ↓
 
-| MySQL | 3306 | 3306 | TCP |Format Response: Natural language
+ | MySQL | 3306 | 3306 | TCP | Format Response: Natural language
 
-| TimescaleDB | 5432 | 5432 | TCP |```
+ | TimescaleDB | 5432 | 5432 | TCP | ```
 
-| Cassandra | 9042 | 9042 | TCP |
+ | Cassandra | 9042 | 9042 | TCP | 
 
-| Analytics | 6001 | 6000 | HTTP |### 3. Ollama Summarization
+ | Analytics | 6001 | 6000 | HTTP | ### 3. Ollama Summarization
 
-| NL2SPARQL | 6005 | 6005 | HTTP |
+ | NL2SPARQL | 6005 | 6005 | HTTP | 
 
-| Decider | 6009 | 6009 | HTTP |```
+ | Decider | 6009 | 6009 | HTTP | ```
 
-| HTTP Server | 8080 | 8080 | HTTP |Analytics Result: Large JSON dataset
+ | HTTP Server | 8080 | 8080 | HTTP | Analytics Result: Large JSON dataset
 
-| Ollama | 11434 | 11434 | HTTP |  ↓
+ | Ollama | 11434 | 11434 | HTTP | ↓
 
 Ollama: "Summarize this data for a non-technical user"
 
@@ -1706,31 +1752,31 @@ Use these names for inter-container communication:  ↓
 
 Include in Response: User-friendly text
 
-```python```
+```python
+```
 
 # Action Server → Analytics
 
 requests.post("http://microservices:6000/analytics/run", ...)## Deployment Considerations
 
 
-
 # Action Server → Fuseki### Resource Requirements
 
 requests.post("http://fuseki-db:3030/trial/sparql", ...)
 
-| Service | CPU | Memory | Disk |
+ | Service | CPU | Memory | Disk | 
 
 # Action Server → Decider|---------|-----|--------|------|
 
 requests.post("http://decider-service:6009/decide", ...)| Rasa | 2 cores | 4 GB | 2 GB |
 
-| Actions | 1 core | 2 GB | 500 MB |
+ | Actions | 1 core | 2 GB | 500 MB | 
 
 # Action Server → NL2SPARQL| Analytics | 2 cores | 4 GB | 1 GB |
 
 requests.post("http://nl2sparql:6005/nl2sparql", ...)| NL2SPARQL | 4 cores | 8 GB | 4 GB (model) |
 
-| Ollama | 4 cores | 8 GB | 8 GB (model) |
+ | Ollama | 4 cores | 8 GB | 8 GB (model) | 
 
 # Action Server → Ollama| Duckling | 1 core | 1 GB | 100 MB |
 
@@ -1794,7 +1840,9 @@ curl http://localhost:6005/health
 
 # Test from within containercurl http://localhost:8080/health
 
-docker exec -it action_server_bldg1 curl http://fuseki-db:3030/$/ping```
+docker exec -it action_server_bldg1 curl http://fuseki-db:3030/$/ping
+
+```
 
 ```
 
@@ -1806,7 +1854,9 @@ View logs for debugging:
 
 ```bash
 
-# Check resource usage```bash
+# Check resource usage
+
+```bash
 
 docker stats# Rasa
 
@@ -1817,7 +1867,6 @@ docker logs rasa_bldg1 --tail 100 -f
 environment:# Actions
 
   - JVM_ARGS=-Xmx4gdocker logs action_server_bldg1 --tail 100 -f
-
 
 
 # Enable caching (Action Server)# Analytics
@@ -1833,9 +1882,7 @@ docker-compose -f docker-compose.bldg1.yml logs -f
 ---```
 
 
-
 ## Related Documentation## Next Steps
-
 
 
 - **[Action Server Architecture](action_server_architecture.md)**: Detailed action server design- [Frontend UI Guide](./frontend_ui.md)

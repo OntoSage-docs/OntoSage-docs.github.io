@@ -7,13 +7,10 @@ date: 2025-09-28
 ---
 
 
-
 # Testing & Operations# Testing & Operations
 
 
-
 **Comprehensive guide to testing strategies, CI/CD pipelines, deployment, and operational procedures for OntoBot.**## Health checks
-
 
 
 ---- Analytics: `/health` on 6001
@@ -38,23 +35,26 @@ date: 2025-09-28
 
 7. [CI/CD Pipelines](#cicd-pipelines)
 
-8. [Deployment Strategies](#deployment-strategies)```powershell
+8. [Deployment Strategies](#deployment-strategies)
+
+```powershell
 
 9. [Monitoring & Logging](#monitoring--logging)python microservices/test_analytics_smoke.py
 
-10. [Backup & Recovery](#backup--recovery)```
+10. [Backup & Recovery](#backup--recovery)
 
+```
 
 
 ---This posts sample payloads to each analysis and reports pass/fail.
 
 
-
 ## Testing Overview## Logs
 
 
+### Testing Pyramid
 
-### Testing Pyramid```powershell
+```powershell
 
 docker-compose logs -f microservices
 
@@ -725,6 +725,7 @@ $jobs | Remove-Job
 ### GitHub Actions
 
 **Workflow File** (`.github/workflows/ci.yml`):
+{% raw %}
 ```yaml
 name: OntoBot CI/CD
 
@@ -799,8 +800,9 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        docker-compose -f docker-compose.bldg1.yml push
+    docker-compose -f docker-compose.bldg1.yml push
 ```
+{% endraw %}
 
 ---
 

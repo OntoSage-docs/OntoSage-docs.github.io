@@ -43,9 +43,7 @@ Comprehensive troubleshooting guide for OntoBot covering common issues across al
 10. [FAQ](#frequently-asked-questions)## Docker & Compose Issues
 
 
-
 ---### Problem: Containers fail to start
-
 
 
 ## Docker & Compose Issues**Symptoms:**
@@ -91,15 +89,13 @@ docker pslsof -i :5005                   # Mac/Linux
 netstat -ano | Select-String "5005|5055|3030|6001"docker-compose -f docker-compose.bldg3.yml down
 
 
-
 # Linux/Mac# Clean up and restart
 
 lsof -i :5005docker system prune -f
 
 lsof -i :5055docker-compose -f docker-compose.bldg1.yml up --build
 
-``````
-
+```
 
 
 **3. Stop all building stacks**:### Problem: Out of memory errors
@@ -115,12 +111,13 @@ docker compose -f docker-compose.bldg3.yml down- "Cannot allocate memory" errors
 ```- Slow performance
 
 
-
 **4. Clean up Docker resources**:**Solutions:**
 
 ```powershell
 
-# Remove stopped containers```
+# Remove stopped containers
+
+```
 
 docker container prune -fDocker Desktop → Settings → Resources
 
@@ -137,7 +134,6 @@ docker network prune -f- Disk: Ensure 50GB+ free space
 docker volume prune -f### Problem: Volume mount issues (Windows)
 
 
-
 # Full cleanup (removes everything)**Symptoms:**
 
 docker system prune -a --volumes- Files not updating in containers
@@ -152,7 +148,9 @@ docker system prune -a --volumes- Files not updating in containers
 
 - Start Docker Desktop again
 
-- Wait 30 seconds for full initialization```powershell
+- Wait 30 seconds for full initialization
+
+```powershell
 
 # Enable file sharing
 
@@ -175,7 +173,6 @@ Docker Desktop → Settings → General → Use WSL2 based engine
 **Solutions**:```
 
 
-
 **1. Check Docker disk usage**:### Problem: Network connectivity between containers
 
 ```powershell
@@ -194,7 +191,9 @@ TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE**Solutions:**
 
 Images          15        5         8.5GB     5.2GB (61%)
 
-Containers      8         3         2.1GB     1.8GB (85%)```yaml
+Containers      8         3         2.1GB     1.8GB (85%)
+
+```yaml
 
 Local Volumes   12        4         15GB      10GB (66%)# Ensure all services use same network
 
@@ -212,7 +211,9 @@ docker image prune -aANALYTICS_URL: http://microservices:6000  # ✅ Correct
 
 ANALYTICS_URL: http://localhost:6001      # ❌ Wrong
 
-# Remove stopped containers```
+# Remove stopped containers
+
+```
 
 docker container prune
 
@@ -231,13 +232,11 @@ docker volume prune## Database Problems
 - Settings → Resources → Disk image size → Increase to 100GB+**Problem: MySQL container fails to start**
 
 
-
 ---```powershell
 
 # Check logs
 
 ### Issue 3: Build Context Too Largedocker-compose -f docker-compose.bldg1.yml logs mysqlserver
-
 
 
 **Symptoms**:# Common causes:
@@ -249,7 +248,6 @@ docker volume prune## Database Problems
 docker volume rm ontobot_mysql_data
 
 **Solutions**:docker-compose -f docker-compose.bldg1.yml up -d mysqlserver
-
 
 
 **1. Create `.dockerignore`**:# 2. Port conflict (3307 in use)
@@ -264,7 +262,9 @@ docker volume rm ontobot_mysql_data
 
 **/.git# Increase Docker memory to 8GB+
 
-**/node_modules```
+**/node_modules
+
+```
 
 **/venv
 
@@ -272,7 +272,9 @@ docker volume rm ontobot_mysql_data
 
 **/models/*.tar.gz
 
-**/logs```sql
+**/logs
+
+```sql
 
 **/.DS_Store-- Enable slow query log
 
@@ -309,7 +311,6 @@ ANALYZE TABLE sensor_readings;
 - Error: `Connection refused` or `Unknown MySQL server host`**Problem: Connection timeouts**
 
 
-
 **Solutions**:```python
 
 # Increase connection timeout
@@ -334,8 +335,7 @@ docker logs mysqlserver --tail 50    'connect_timeout': 60,      # Increase from
 
 # Should see: "ready for connections"}
 
-``````
-
+```
 
 
 **3. Test connection from host**:### TimescaleDB (Building 2)
@@ -346,7 +346,7 @@ mysql -h localhost -P 3307 -u rasa_user -p**Problem: TimescaleDB extension not l
 
 # Enter password: rasa_pass
 
-``````sql
+```sql
 
 -- Check if extension is loaded
 
@@ -364,7 +364,9 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 # DB_PORT=3306SELECT * FROM timescaledb_information.hypertables;
 
-# DB_NAME=telemetry```
+# DB_NAME=telemetry
+
+```
 
 ```
 
@@ -372,7 +374,8 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 **5. Restart database**:
 
-```powershell```sql
+```powershell
+```sql
 
 docker compose -f docker-compose.bldg1.yml restart mysqlserver-- Check table sizes
 
@@ -406,9 +409,12 @@ SELECT compress_chunk(i) FROM show_chunks('sensor_readings') i;
 
 **1. Check hypertable compression**:SELECT remove_retention_policy('sensor_readings');
 
-```sqlSELECT add_retention_policy('sensor_readings', INTERVAL '6 months');
+```sql
+SELECT add_retention_policy('sensor_readings', INTERVAL '6 months');
 
-SELECT * FROM timescaledb_information.chunks```
+SELECT * FROM timescaledb_information.chunks
+
+```
 
 WHERE hypertable_name = 'sensor_data'
 
@@ -420,7 +426,8 @@ ORDER BY chunk_name;**Problem: Continuous aggregate not updating**
 
 **2. Enable compression policy** (if not already):-- Check continuous aggregate status
 
-```sqlSELECT * FROM timescaledb_information.continuous_aggregates;
+```sql
+SELECT * FROM timescaledb_information.continuous_aggregates;
 
 ALTER TABLE sensor_data SET (
 
@@ -442,7 +449,8 @@ SELECT add_compression_policy('sensor_data', INTERVAL '7 days');WHERE applicatio
 
 **3. Use continuous aggregates for long time ranges**:SELECT remove_continuous_aggregate_policy('sensor_readings_hourly');
 
-```sqlSELECT add_continuous_aggregate_policy('sensor_readings_hourly',
+```sql
+SELECT add_continuous_aggregate_policy('sensor_readings_hourly',
 
 -- Query hourly aggregate instead of raw data    start_offset => INTERVAL '3 hours',
 
@@ -457,12 +465,13 @@ WHERE sensor_name = 'Zone_101_Temperature_Sensor'```
 ```### Cassandra (Building 3)
 
 
-
 **4. Increase shared_buffers**:**Problem: Cassandra fails to start**
 
 ```yaml
 
-# docker-compose.bldg2.yml```powershell
+# docker-compose.bldg2.yml
+
+```powershell
 
 timescaledb:# Check logs
 
@@ -475,7 +484,6 @@ timescaledb:# Check logs
     -c work_mem=50MB# 1. Insufficient memory (needs 4GB+ heap)
 
 ```# Increase Docker memory to 16GB total
-
 
 
 ---# 2. Port conflict (9042 in use)
@@ -493,7 +501,6 @@ netstat -ano | findstr "9042"
 - Action server logs: `NoHostAvailable: ('Unable to connect to any servers')`docker-compose -f docker-compose.bldg3.yml up -d cassandra
 
 
-
 **Solutions**:# Wait for Cassandra to start (3-5 minutes)
 
 Start-Sleep -Seconds 300
@@ -503,7 +510,6 @@ Start-Sleep -Seconds 300
 ```powershell
 
 docker logs cassandra --follow**Problem: Slow queries**
-
 
 
 # Wait for: "Starting listening for CQL clients"```bash
@@ -519,11 +525,9 @@ docker-compose -f docker-compose.bldg3.yml exec cassandra nodetool status
 docker exec cassandra nodetool statusdocker-compose -f docker-compose.bldg3.yml exec cassandra nodetool compactionstats
 
 
-
 # Should show: UN (Up/Normal)# Force compaction
 
 ```docker-compose -f docker-compose.bldg3.yml exec cassandra nodetool compact telemetry_bldg3 sensor_data
-
 
 
 **3. Increase memory allocation**:# Check if compression enabled
@@ -596,8 +600,9 @@ docker ps | Select-String "rasa"session.execute(prepare, (uuid, timestamp, value
 
 ```powershellbatch = BatchStatement(batch_type=BatchType.UNLOGGED)
 
-docker logs rasa-bldg1 --tail 100```
+docker logs rasa-bldg1 --tail 100
 
+```
 
 
 # Look for errors or "Rasa server is up and running"---
@@ -616,7 +621,7 @@ docker logs rasa-bldg1 | Select-String "model"
 
 # Should see: "Loading model: /app/models/20251031-140000.tar.gz"
 
-``````powershell
+```powershell
 
 # Check logs
 
@@ -631,7 +636,6 @@ docker exec rasa-bldg1 ls -lh /app/models/# Common causes:
 # Should show at least one .tar.gz filedocker-compose -f docker-compose.bldg1.yml exec rasa rasa train
 
 ```docker-compose -f docker-compose.bldg1.yml restart rasa
-
 
 
 **5. Train new model if missing**:# 2. Invalid domain.yml or config.yml
@@ -673,7 +677,6 @@ docker-compose -f docker-compose.bldg1.yml exec rasa rasa data validate --domain
 **Solutions**:```
 
 
-
 **1. Check Python dependencies**:### Action Server (5055)
 
 ```powershell
@@ -681,8 +684,9 @@ docker-compose -f docker-compose.bldg1.yml exec rasa rasa data validate --domain
 docker logs rasa-action-server-bldg1**Problem: Action server not responding**
 
 
+# Look for: ModuleNotFoundError, ImportError
 
-# Look for: ModuleNotFoundError, ImportError```powershell
+```powershell
 
 ```# Check health
 
@@ -731,7 +735,6 @@ docker exec rasa-action-server-bldg1 env | Select-String "DB_|FUSEKI|ANALYTICS"*
 docker exec -it rasa-action-server-bldg1 python -c "from actions.actions import ActionGetSensorData"logger = logging.getLogger(__name__)
 
 
-
 # Should not show errorsclass ActionQueryCO2(Action):
 
 ```    def run(self, dispatcher, tracker, domain):
@@ -750,19 +753,21 @@ docker exec -it rasa-action-server-bldg1 python -c "from actions.actions import 
 
 - Analytics returns HTTP 500 Internal Server Error        return []
 
-- Logs show Python exceptions```
+- Logs show Python exceptions
 
+```
 
 
 **Solutions**:### Analytics Microservice (6001)
-
 
 
 **1. Check analytics logs**:**Problem: Analytics service not starting**
 
 ```powershell
 
-docker logs microservices --tail 100```powershell
+docker logs microservices --tail 100
+
+```powershell
 
 ```# Check logs
 
@@ -788,15 +793,16 @@ docker exec microservices ls -la /app/shared_data/artifacts/
 
 # Should be writablenetstat -ano | findstr "6001"
 
-``````
-
+```
 
 
 **4. Restart analytics service**:**Problem: Analytics requests timing out**
 
 ```powershell
 
-docker compose -f docker-compose.bldg1.yml restart microservices```python
+docker compose -f docker-compose.bldg1.yml restart microservices
+
+```python
 
 ```# Increase timeout in requests
 
@@ -815,13 +821,13 @@ docker exec microservices df -h /app/shared_data    'http://localhost:6001/analy
 ---)
 
 
-
 ## Rasa & NLU Issues# Check analytics logs for errors
 
 docker-compose -f docker-compose.bldg1.yml logs -f microservices
 
-### Issue 1: Intent Not Recognized```
+### Issue 1: Intent Not Recognized
 
+```
 
 
 **Symptoms**:### Frontend (3000)
@@ -829,7 +835,6 @@ docker-compose -f docker-compose.bldg1.yml logs -f microservices
 - User query triggers fallback intent
 
 - Bot responds: "I didn't understand that"**Problem: Frontend not loading**
-
 
 
 **Solutions**:```powershell
@@ -872,7 +877,8 @@ curl -X POST http://localhost:5005/model/parse \# 2. Environment variables missi
 
 **Response shows intent confidence**:
 
-```json```javascript
+```json
+```javascript
 
 {// Check CORS settings in rasa/credentials.yml
 
@@ -911,7 +917,6 @@ curl -X POST http://localhost:5005/model/parse \# 2. Environment variables missi
 ```**Problem: No sensor data**
 
 
-
 **4. Retrain model**:```sql
 
 ```powershell-- Check if data exists
@@ -927,7 +932,6 @@ docker compose -f docker-compose.bldg1.yml restart rasa-bldg1SELECT COUNT(*) FRO
 ---SELECT * FROM sensor_readings ORDER BY timestamp DESC LIMIT 10;
 
 
-
 ### Issue 2: Entity Not Extracted-- If empty, check data ingestion
 
 -- Verify ThingsBoard or data pipeline is running
@@ -937,7 +941,6 @@ docker compose -f docker-compose.bldg1.yml restart rasa-bldg1SELECT COUNT(*) FRO
 - Slot `sensor_type` is None
 
 - Action fails: "Missing required slot"**Problem: Missing zones**
-
 
 
 **Solutions**:```sql
@@ -954,7 +957,9 @@ docker compose -f docker-compose.bldg1.yml restart rasa-bldg1SELECT COUNT(*) FRO
 
     - show me [temperature](sensor_type)VALUES ('5.12', 5, 'Building1', 'Zone 5.12');
 
-    - what is the [co2](sensor_type) level```
+    - what is the [co2](sensor_type) level
+
+```
 
 ```
 
@@ -966,7 +971,9 @@ docker compose -f docker-compose.bldg1.yml restart rasa-bldg1SELECT COUNT(*) FRO
 
 # rasa-bldg1/data/nlu.yml
 
-- lookup: sensor_type```sql
+- lookup: sensor_type
+
+```sql
 
   examples: |-- Check if table is a hypertable
 
@@ -992,7 +999,7 @@ curl -X POST http://localhost:5005/model/parse \**Problem: No HVAC data**
 
   -d '{"text": "show me temperature"}'
 
-``````sql
+```sql
 
 -- Check equipment IDs
 
@@ -1008,16 +1015,13 @@ entities:-- Check sensor types
 
   - time_range-- Verify data pipeline for AHU, Chiller, Boiler data
 
-``````
-
+```
 
 
 ---### Building 3 (Data Center) - Cassandra
 
 
-
 ### Issue 3: Form Not Filling Slots**Problem: No telemetry data**
-
 
 
 **Symptoms**:```cql
@@ -1046,7 +1050,9 @@ forms:-- Count records
 
       - start_dateSELECT * FROM sensor_data LIMIT 10;
 
-      - end_date```
+      - end_date
+
+```
 
 ```
 
@@ -1054,7 +1060,8 @@ forms:-- Count records
 
 **2. Verify slot mappings**:
 
-```yaml```cql
+```yaml
+```cql
 
 slots:-- Verify alarm table exists
 
@@ -1066,7 +1073,9 @@ slots:-- Verify alarm table exists
 
       - type: from_entity-- Alarms should be generated by monitoring service
 
-        entity: sensor_type```
+        entity: sensor_type
+
+```
 
 ```
 
@@ -1094,7 +1103,9 @@ class ValidateSensorForm(FormValidationAction):
 
         else:5. Consider caching frequently accessed data
 
-            return {"sensor_type": None}```
+            return {"sensor_type": None}
+
+```
 
 ```
 
@@ -1138,7 +1149,8 @@ start_time = datetime.now() - timedelta(hours=48)  # Instead of 1 hour      reso
 
 **2. Verify data exists in database**:          memory: 4G
 
-```sql```
+```sql
+```
 
 SELECT COUNT(*)
 
@@ -1157,7 +1169,6 @@ docker stats --no-stream
 ```python# Restart leaking containers
 
 from rapidfuzz import fuzzdocker-compose -f docker-compose.bldg1.yml restart <service>
-
 
 
 score = fuzz.ratio("temp sensor 501", "Air_Temperature_Sensor_5.01")# Check for connection leaks in custom code
@@ -1197,7 +1208,6 @@ docker-compose -f docker-compose.bldg1.yml restart actions
 - Artifacts directory emptydocker-compose -f docker-compose.bldg1.yml restart frontend
 
 
-
 **Solutions**:# Force rebuild if needed
 
 docker-compose -f docker-compose.bldg1.yml up --build <service>
@@ -1228,7 +1238,9 @@ docker-compose -f docker-compose.bldg1.yml exec actions pip install <package>
 
 docker exec microservices python -c "docker-compose -f docker-compose.bldg1.yml up --build actions
 
-import matplotlib```
+import matplotlib
+
+```
 
 matplotlib.use('Agg')
 
@@ -1236,7 +1248,9 @@ import matplotlib.pyplot as plt### Training Fails
 
 plt.plot([1,2,3], [4,5,6])
 
-plt.savefig('/app/shared_data/artifacts/test.png')```powershell
+plt.savefig('/app/shared_data/artifacts/test.png')
+
+```powershell
 
 print('Chart saved')# Validate data
 
@@ -1259,9 +1273,7 @@ docker-compose -f docker-compose.bldg1.yml exec rasa rasa train --debug
 ---```
 
 
-
 ### Issue 3: Analytics Timeout---
-
 
 
 **Symptoms**:## FAQ
@@ -1269,7 +1281,6 @@ docker-compose -f docker-compose.bldg1.yml exec rasa rasa train --debug
 - Analytics request times out after 60 seconds
 
 - No response received### Q: How do I switch between buildings?
-
 
 
 **Solutions**:```powershell
@@ -1335,13 +1346,11 @@ docker stats microservicesdocker system prune -a -f --volumes
 ```### Q: How do I backup my data?
 
 
-
 ---```powershell
 
 # MySQL
 
 ## Building-Specific Issuesdocker-compose -f docker-compose.bldg1.yml exec mysqlserver mysqldump -u root -ppassword telemetry > backup.sql
-
 
 
 ### Building 1 (MySQL) Issues# PostgreSQL/TimescaleDB
@@ -1354,7 +1363,9 @@ docker-compose -f docker-compose.bldg2.yml exec timescale pg_dump -U postgres te
 
 **Symptoms**:docker-compose -f docker-compose.bldg3.yml exec cassandra nodetool snapshot telemetry_bldg3
 
-- Query returns UUID instead of human-readable name```
+- Query returns UUID instead of human-readable name
+
+```
 
 - Artifacts show: `a1b2c3d4-e5f6-7890...`
 
@@ -1386,7 +1397,8 @@ docker exec rasa-action-server-bldg1 python /app/actions/update_sensor_mappings.
 
 **3. Verify UUID→Name mapping in action**:# 4. Run: nodetool refresh telemetry_bldg3 sensor_data
 
-```python```
+```python
+```
 
 # actions/actions.py
 
@@ -1405,17 +1417,16 @@ sensor_name = sensor_mappings.get(uuid, uuid)  # Fallback to UUID  rasa:
 ```    image: rasa/rasa:3.6.12-full  # Change version here
 
 
-
 ---# Then rebuild
 
 docker-compose -f docker-compose.bldg1.yml up --build rasa
 
-### Building 2 (TimescaleDB) Issues```
+### Building 2 (TimescaleDB) Issues
 
+```
 
 
 **Issue: Hypertable Not Created**### Q: How do I add a new sensor?
-
 
 
 **Symptoms**:```sql
@@ -1471,7 +1482,6 @@ curl http://localhost:6001/health         # Analytics
 ---curl http://localhost:6009/health         # Decider
 
 
-
 ### Building 3 (Cassandra) Issues# Database connectivity
 
 # MySQL
@@ -1479,11 +1489,9 @@ curl http://localhost:6001/health         # Analytics
 **Issue: Partition Key Error**docker-compose -f docker-compose.bldg1.yml exec mysqlserver mysql -u root -ppassword -e "SELECT 1"
 
 
-
 **Symptoms**:# TimescaleDB
 
 - Query returns: "Cannot execute this query as it might involve data filtering"docker-compose -f docker-compose.bldg2.yml exec timescale pg_isready
-
 
 
 **Solutions**:# Cassandra
@@ -1541,17 +1549,16 @@ CREATE INDEX ON sensor_data (alarm_status);
 ```## Getting Help
 
 
-
 ---### Logs to Check
 
 
+## Performance Problems
 
-## Performance Problems```powershell
+```powershell
 
 # All services
 
 ### Issue 1: High Memory Usagedocker-compose -f docker-compose.bldg1.yml logs
-
 
 
 **Symptoms**:# Specific service
@@ -1591,7 +1598,6 @@ mysqlserver:```powershell
 ```docker version
 
 
-
 **3. Reduce database buffer pools**:# Network inspection
 
 ```yamldocker network ls
@@ -1612,7 +1618,9 @@ timescaledb:
 
 docker inspect ontobot_rasa_1
 
-# Cassandra```
+# Cassandra
+
+```
 
 cassandra:
 

@@ -23,33 +23,33 @@ Building 3 represents a Tier III data center facility designed for high-availabi
 
 ### Key Specifications
 
-| Property | Details |
+ | Property | Details | 
 
-| Property | Value ||----------|---------|
+ | Property | Value | | ---------- | --------- | 
 
-|----------|-------|| **Building Type** | Synthetic Critical Infrastructure |
+ | ---------- | ------- | | **Building Type** | Synthetic Critical Infrastructure | 
 
-| **Building Type** | Synthetic Critical Infrastructure || **Purpose** | Data Center Operations & Monitoring |
+ | **Building Type** | Synthetic Critical Infrastructure | | **Purpose** | Data Center Operations & Monitoring | 
 
-| **Primary Focus** | Data Center Operations & Uptime || **Sensor Coverage** | 597 sensors across multiple zones |
+ | **Primary Focus** | Data Center Operations & Uptime | | **Sensor Coverage** | 597 sensors across multiple zones | 
 
-| **Total Sensors** | 597 distributed across power + cooling + alarms || **Focus Area** | Cooling Systems, Power Distribution & Alarms |
+ | **Total Sensors** | 597 distributed across power + cooling + alarms | | **Focus Area** | Cooling Systems, Power Distribution & Alarms | 
 
-| **Database** | Cassandra 4.1 (distributed NoSQL) || **Database** | Cassandra (port 9042) - Distributed NoSQL |
+ | **Database** | Cassandra 4.1 (distributed NoSQL) | | **Database** | Cassandra (port 9042) - Distributed NoSQL | 
 
-| **Metadata Store** | PostgreSQL 15 (ThingsBoard entities) || **Metadata Store** | PostgreSQL (port 5434) - ThingsBoard entities |
+ | **Metadata Store** | PostgreSQL 15 (ThingsBoard entities) | | **Metadata Store** | PostgreSQL (port 5434) - ThingsBoard entities | 
 
-| **Port (Cassandra)** | 9042 (host & container) || **Knowledge Graph** | Brick Schema 1.3 via Jena Fuseki (port 3030) |
+ | **Port (Cassandra)** | 9042 (host & container) | | **Knowledge Graph** | Brick Schema 1.3 via Jena Fuseki (port 3030) | 
 
-| **Port (PostgreSQL)** | 5434 (host), 5432 (container) || **Compose File** | `docker-compose.bldg3.yml` |
+ | **Port (PostgreSQL)** | 5434 (host), 5432 (container) | | **Compose File** | `docker-compose.bldg3.yml` | 
 
-| **Knowledge Graph** | Brick Schema 1.3 via Jena Fuseki || **Technology Stack** | Rasa 3.6.12, Python 3.10, Docker, Cassandra 4.1 |
+ | **Knowledge Graph** | Brick Schema 1.3 via Jena Fuseki | | **Technology Stack** | Rasa 3.6.12, Python 3.10, Docker, Cassandra 4.1 | 
 
-| **Compose File** | `docker-compose.bldg3.yml` |
+ | **Compose File** | `docker-compose.bldg3.yml` | 
 
-| **Tech Stack** | Rasa 3.6.12, Python 3.10, Docker, Cassandra 4.1 |## Critical Infrastructure Monitoring
+ | **Tech Stack** | Rasa 3.6.12, Python 3.10, Docker, Cassandra 4.1 | ## Critical Infrastructure Monitoring
 
-| **Dataset** | `bldg3/trial/dataset/*.ttl` |
+ | **Dataset** | `bldg3/trial/dataset/*.ttl` | 
 
 ### Equipment Coverage (597 Sensors)
 
@@ -139,7 +139,9 @@ Building 3 deploys **597 sensors** across **6 major categories**:- Alarm status 
 
    - Server CPU utilization**PUE (Power Usage Effectiveness):**
 
-   - Network bandwidth utilization```
+   - Network bandwidth utilization
+
+```
 
    - Storage capacityPUE = Total Facility Power / IT Equipment Power
 
@@ -151,7 +153,9 @@ Building 3 deploys **597 sensors** across **6 major categories**:- Alarm status 
 
 **DCiE (Data Center Infrastructure Efficiency):**
 
-## Cooling Systems (CRAC Units)```
+## Cooling Systems (CRAC Units)
+
+```
 
 DCiE = 1 / PUE × 100%
 
@@ -163,39 +167,39 @@ Each CRAC unit monitors:
 
 **Other Metrics:**
 
-| Sensor Type | Measurement | Range | Update Frequency |- Cooling efficiency (kW per ton)
+ | Sensor Type | Measurement | Range | Update Frequency | - Cooling efficiency (kW per ton)
 
-|-------------|-------------|-------|------------------|- Server inlet temperature
+ | ------------- | ------------- | ------- | ------------------ | - Server inlet temperature
 
-| Supply Air Temperature | Cooled air delivered to room | 15-25°C | 30 seconds |- Return temperature index (RTI)
+ | Supply Air Temperature | Cooled air delivered to room | 15-25°C | 30 seconds | - Return temperature index (RTI)
 
-| Return Air Temperature | Air returned from room | 20-35°C | 30 seconds |- Cooling capacity utilization
+ | Return Air Temperature | Air returned from room | 20-35°C | 30 seconds | - Cooling capacity utilization
 
-| Supply Airflow Rate | CFM delivered | 0-20,000 CFM | 1 minute |- Power capacity utilization
+ | Supply Airflow Rate | CFM delivered | 0-20,000 CFM | 1 minute | - Power capacity utilization
 
-| Return Humidity | Moisture content | 30-60% RH | 1 minute |
+ | Return Humidity | Moisture content | 30-60% RH | 1 minute | 
 
-| Cooling Capacity | Ton or kW | 0-50 tons | 1 minute |## Cassandra Database Architecture
+ | Cooling Capacity | Ton or kW | 0-50 tons | 1 minute | ## Cassandra Database Architecture
 
-| Compressor Status | On/Off/Fault | Boolean | 30 seconds |
+ | Compressor Status | On/Off/Fault | Boolean | 30 seconds | 
 
-| Fan Speed | Percentage | 0-100% | 1 minute |### Why Cassandra?
+ | Fan Speed | Percentage | 0-100% | 1 minute | ### Why Cassandra?
 
-| Condensate Drain Status | OK/Clogged | Boolean | 5 minutes |
+ | Condensate Drain Status | OK/Clogged | Boolean | 5 minutes | 
 
-| Efficiency Metric | COP or EER | 2.0-5.0 | 5 minutes |Cassandra is a distributed NoSQL database ideal for mission-critical data:
+ | Efficiency Metric | COP or EER | 2.0-5.0 | 5 minutes | Cassandra is a distributed NoSQL database ideal for mission-critical data:
 
-| Alarm Status | Normal/Warning/Critical | Enum | 30 seconds |
+ | Alarm Status | Normal/Warning/Critical | Enum | 30 seconds | 
 
-| Power Consumption | kW | 0-25 kW | 1 minute |**Benefits:**
+ | Power Consumption | kW | 0-25 kW | 1 minute | **Benefits:**
 
-| Filter Status | Clean/Dirty | Boolean | 1 hour |- ✅ **High Availability** - No single point of failure
+ | Filter Status | Clean/Dirty | Boolean | 1 hour | - ✅ **High Availability** - No single point of failure
 
-| Refrigerant Pressure (High) | psi | 200-450 psi | 1 minute |- ✅ **Linear Scalability** - Add nodes without downtime
+ | Refrigerant Pressure (High) | psi | 200-450 psi | 1 minute | - ✅ **Linear Scalability** - Add nodes without downtime
 
-| Refrigerant Pressure (Low) | psi | 50-100 psi | 1 minute |- ✅ **Write Performance** - Millions of writes/second
+ | Refrigerant Pressure (Low) | psi | 50-100 psi | 1 minute | - ✅ **Write Performance** - Millions of writes/second
 
-| Water Leak Sensor | Dry/Wet | Boolean | 30 seconds |- ✅ **Geographic Distribution** - Multi-datacenter replication
+ | Water Leak Sensor | Dry/Wet | Boolean | 30 seconds | - ✅ **Geographic Distribution** - Multi-datacenter replication
 
 - ✅ **Tunable Consistency** - Balance between consistency & availability
 
@@ -207,7 +211,9 @@ CRAC_1_Supply_Air_Temperature_Sensor### Database Configuration
 
 CRAC_1_Return_Air_Temperature_Sensor
 
-CRAC_1_Supply_Airflow_Rate_Sensor```yaml
+CRAC_1_Supply_Airflow_Rate_Sensor
+
+```yaml
 
 CRAC_1_Return_Humidity_Sensor# docker-compose.bldg3.yml
 
@@ -235,45 +241,45 @@ CRAC_1_Power_Consumption_Sensor    CASSANDRA_CLUSTER_NAME: "DataCenter-Cluster"
 
     - cassandra_data:/var/lib/cassandra
 
-## Power Distribution (UPS + PDUs)```
+## Power Distribution (UPS + PDUs)
 
+```
 
 
 ### UPS Systems (10 units × 12 sensors = 120 sensors)### Cassandra Schema
-
 
 
 Each UPS monitors:```cql
 
 -- Create keyspace with replication
 
-| Sensor Type | Measurement | Range | Update Frequency |CREATE KEYSPACE IF NOT EXISTS telemetry_bldg3
+ | Sensor Type | Measurement | Range | Update Frequency | CREATE KEYSPACE IF NOT EXISTS telemetry_bldg3
 
-|-------------|-------------|-------|------------------|WITH replication = {
+ | ------------- | ------------- | ------- | ------------------ | WITH replication = {
 
-| Input Voltage (Phase A) | AC voltage in | 200-250V | 1 second |    'class': 'SimpleStrategy',
+ | Input Voltage (Phase A) | AC voltage in | 200-250V | 1 second | 'class': 'SimpleStrategy',
 
-| Input Voltage (Phase B) | AC voltage in | 200-250V | 1 second |    'replication_factor': 3  -- For production cluster
+ | Input Voltage (Phase B) | AC voltage in | 200-250V | 1 second | 'replication_factor': 3  -- For production cluster
 
-| Input Voltage (Phase C) | AC voltage in | 200-250V | 1 second |};
+ | Input Voltage (Phase C) | AC voltage in | 200-250V | 1 second | };
 
-| Output Voltage | AC voltage out | 210-230V | 1 second |
+ | Output Voltage | AC voltage out | 210-230V | 1 second | 
 
-| Output Current | Amps delivered | 0-200A | 1 second |USE telemetry_bldg3;
+ | Output Current | Amps delivered | 0-200A | 1 second | USE telemetry_bldg3;
 
-| Output Power | kW | 0-100 kW | 1 second |
+ | Output Power | kW | 0-100 kW | 1 second | 
 
-| Battery Charge Level | Percentage | 0-100% | 1 minute |-- Sensor readings table (time-series)
+ | Battery Charge Level | Percentage | 0-100% | 1 minute | -- Sensor readings table (time-series)
 
-| Battery Voltage | DC volts | 200-300V | 1 minute |CREATE TABLE IF NOT EXISTS sensor_data (
+ | Battery Voltage | DC volts | 200-300V | 1 minute | CREATE TABLE IF NOT EXISTS sensor_data (
 
-| Battery Temperature | Celsius | 20-30°C | 5 minutes |    sensor_uuid UUID,
+ | Battery Temperature | Celsius | 20-30°C | 5 minutes | sensor_uuid UUID,
 
-| Load Percentage | Percentage of capacity | 0-100% | 1 second |    timestamp TIMESTAMP,
+ | Load Percentage | Percentage of capacity | 0-100% | 1 second | timestamp TIMESTAMP,
 
-| Runtime Remaining | Minutes on battery | 0-60 min | 1 minute |    value DOUBLE,
+ | Runtime Remaining | Minutes on battery | 0-60 min | 1 minute | value DOUBLE,
 
-| Alarm Status | Normal/Fault | Enum | 1 second |    unit TEXT,
+ | Alarm Status | Normal/Fault | Enum | 1 second | unit TEXT,
 
     zone TEXT,
 
@@ -325,21 +331,21 @@ Each PDU monitors:    PRIMARY KEY ((equipment_id), timestamp)
 
 ) WITH CLUSTERING ORDER BY (timestamp DESC);
 
-| Sensor Type | Measurement | Range | Update Frequency |
+ | Sensor Type | Measurement | Range | Update Frequency | 
 
-|-------------|-------------|-------|------------------|-- Equipment status table
+ | ------------- | ------------- | ------- | ------------------ | -- Equipment status table
 
-| Voltage Phase L1 | AC voltage | 210-230V | 1 second |CREATE TABLE IF NOT EXISTS equipment_status (
+ | Voltage Phase L1 | AC voltage | 210-230V | 1 second | CREATE TABLE IF NOT EXISTS equipment_status (
 
-| Voltage Phase L2 | AC voltage | 210-230V | 1 second |    equipment_id TEXT,
+ | Voltage Phase L2 | AC voltage | 210-230V | 1 second | equipment_id TEXT,
 
-| Voltage Phase L3 | AC voltage | 210-230V | 1 second |    equipment_type TEXT,
+ | Voltage Phase L3 | AC voltage | 210-230V | 1 second | equipment_type TEXT,
 
-| Total Power | kW across all phases | 0-50 kW | 1 second |    zone TEXT,
+ | Total Power | kW across all phases | 0-50 kW | 1 second | zone TEXT,
 
-| Total Current | Amps across all phases | 0-150A | 1 second |    status TEXT,
+ | Total Current | Amps across all phases | 0-150A | 1 second | status TEXT,
 
-| Circuit Breaker Status | OK/Tripped | Boolean | 1 second |    last_updated TIMESTAMP,
+ | Circuit Breaker Status | OK/Tripped | Boolean | 1 second | last_updated TIMESTAMP,
 
     metadata MAP<TEXT, TEXT>,
 
@@ -379,15 +385,15 @@ Each rack monitors:
 
 **Get Recent CRAC Temperature:**
 
-| Sensor Type | Measurement | Range | Update Frequency |```cql
+ | Sensor Type | Measurement | Range | Update Frequency | ```cql
 
-|-------------|-------------|-------|------------------|SELECT timestamp, value, unit, equipment_id
+ | ------------- | ------------- | ------- | ------------------ | SELECT timestamp, value, unit, equipment_id
 
-| Rack Inlet Temperature | Cold aisle temp | 18-27°C | 1 minute |FROM sensor_data
+ | Rack Inlet Temperature | Cold aisle temp | 18-27°C | 1 minute | FROM sensor_data
 
-| Rack Outlet Temperature | Hot aisle temp | 25-45°C | 1 minute |WHERE sensor_uuid = uuid-crac-001
+ | Rack Outlet Temperature | Hot aisle temp | 25-45°C | 1 minute | WHERE sensor_uuid = uuid-crac-001
 
-| Rack Power Consumption | kW | 0-20 kW | 1 minute |  AND timestamp >= '2025-10-08 00:00:00'
+ | Rack Power Consumption | kW | 0-20 kW | 1 minute | AND timestamp >= '2025-10-08 00:00:00'
 
   AND timestamp <= '2025-10-08 23:59:59'
 
@@ -395,13 +401,17 @@ Each rack monitors:
 
 ```LIMIT 100;
 
-Rack_A01_Inlet_Temperature_Sensor```
+Rack_A01_Inlet_Temperature_Sensor
+
+```
 
 Rack_A01_Outlet_Temperature_Sensor
 
 Rack_A01_Power_Consumption_Sensor**Query Active Alarms:**
 
-Rack_B15_Inlet_Temperature_Sensor```cql
+Rack_B15_Inlet_Temperature_Sensor
+
+```cql
 
 Rack_B15_Outlet_Temperature_SensorSELECT alarm_id, timestamp, severity, message
 
@@ -419,7 +429,9 @@ Rack_B15_Power_Consumption_SensorFROM alarms
 
 **Get Hourly Averages:**
 
-## Environmental Monitoring```cql
+## Environmental Monitoring
+
+```cql
 
 SELECT hour, avg_value, min_value, max_value
 
@@ -431,19 +443,19 @@ Each room monitors:  AND hour >= '2025-10-01 00:00:00'
 
   AND hour <= '2025-10-08 00:00:00'
 
-| Sensor Type | Measurement | Range | Update Frequency |ORDER BY hour DESC;
+ | Sensor Type | Measurement | Range | Update Frequency | ORDER BY hour DESC;
 
-|-------------|-------------|-------|------------------|```
+ | ------------- | ------------- | ------- | ------------------ | ```
 
-| Room Temperature | Ambient temp | 18-30°C | 1 minute |
+ | Room Temperature | Ambient temp | 18-30°C | 1 minute | 
 
-| Room Humidity | Relative humidity | 30-60% RH | 1 minute |### Python Client Integration
+ | Room Humidity | Relative humidity | 30-60% RH | 1 minute | ### Python Client Integration
 
-| Leak Detection | Dry/Wet | Boolean | 30 seconds |
+ | Leak Detection | Dry/Wet | Boolean | 30 seconds | 
 
-| Smoke Detector | Clear/Smoke | Boolean | 1 second |```python
+ | Smoke Detector | Clear/Smoke | Boolean | 1 second | ```python
 
-| Door Access | Closed/Open | Boolean | 1 second |# actions/cassandra_client.py
+ | Door Access | Closed/Open | Boolean | 1 second | # actions/cassandra_client.py
 
 from cassandra.cluster import Cluster
 
@@ -649,7 +661,8 @@ USE building3;            acknowledged_by = %s,
 
         self.session.execute(query, (acknowledged_by, datetime.now(), uuid.UUID(alarm_id)))
 
-```cql```
+```cql
+```
 
 CREATE TABLE sensor_data (
 
@@ -673,7 +686,9 @@ CREATE TABLE sensor_data (
 
     PRIMARY KEY ((sensor_id), timestamp)"Display CRAC airflow rates"
 
-) WITH CLUSTERING ORDER BY (timestamp DESC)```
+) WITH CLUSTERING ORDER BY (timestamp DESC)
+
+```
 
   AND compaction = {'class': 'TimeWindowCompactionStrategy', 'compaction_window_size': 1, 'compaction_window_unit': 'DAYS'}
 
@@ -713,12 +728,13 @@ VALUES ('crac1_supply_temp', 'CRAC_1_Supply_Air_Temperature_Sensor', 'temperatur
 
 "Acknowledge alarm [ID]"
 
-INSERT INTO sensor_data (sensor_id, sensor_name, sensor_type, timestamp, reading_value, reading_unit, equipment_id, alarm_status)```
+INSERT INTO sensor_data (sensor_id, sensor_name, sensor_type, timestamp, reading_value, reading_unit, equipment_id, alarm_status)
+
+```
 
 VALUES ('crac1_alarm', 'CRAC_1_Alarm_Status_Sensor', 'alarm', '2025-10-31 10:00:00', 0, 'boolean', 'CRAC_1', 'normal');
 
 ```### Environmental Monitoring
-
 
 
 **UPS Data**:```
@@ -741,7 +757,8 @@ VALUES ('ups1_load', 'UPS_1_Load_Percentage_Sensor', 'percentage', '2025-10-31 1
 
 **Rack Data**:
 
-```cql```
+```cql
+```
 
 INSERT INTO sensor_data (sensor_id, sensor_name, sensor_type, timestamp, reading_value, reading_unit, zone_id, alarm_status)"Calculate our DCiE for today"
 
@@ -753,53 +770,49 @@ INSERT INTO sensor_data (sensor_id, sensor_name, sensor_type, timestamp, reading
 
 VALUES ('racka01_power', 'Rack_A01_Power_Consumption_Sensor', 'power', '2025-10-31 10:00:00', 12.3, 'kW', 'Rack_A01', 'normal');"Show PUE history for the past month"
 
-``````
-
+```
 
 
 ---## High Availability Features
 
 
-
 ### Database Performance### Replication Strategy
-
 
 
 **Storage Statistics** (1 year of data):**Production Setup (3+ nodes):**
 
 ```cql
 
-| Metric | Value |CREATE KEYSPACE telemetry_bldg3
+ | Metric | Value | CREATE KEYSPACE telemetry_bldg3
 
-|--------|-------|WITH replication = {
+ | -------- | ------- | WITH replication = {
 
-| Raw Data Size | 78 GB (3 nodes, RF=3 → 234 GB total) |    'class': 'NetworkTopologyStrategy',
+ | Raw Data Size | 78 GB (3 nodes, RF=3 → 234 GB total) | 'class': 'NetworkTopologyStrategy',
 
-| Total Records | 315 million |    'DC1': 3,  -- 3 replicas in datacenter 1
+ | Total Records | 315 million | 'DC1': 3,  -- 3 replicas in datacenter 1
 
-| Daily Inserts | 860,000 |    'DC2': 2   -- 2 replicas in datacenter 2 (DR site)
+ | Daily Inserts | 860,000 | 'DC2': 2   -- 2 replicas in datacenter 2 (DR site)
 
-| Write Throughput | 600-1,000 writes/sec |};
+ | Write Throughput | 600-1,000 writes/sec | };
 
-| Read Throughput | 200-500 reads/sec |```
-
+ | Read Throughput | 200-500 reads/sec | ```
 
 
 **Query Performance** (single node):**Consistency Levels:**
 
 - **QUORUM** - Majority of replicas (recommended for critical data)
 
-| Query Type | Response Time |- **LOCAL_QUORUM** - Majority within local DC (better latency)
+ | Query Type | Response Time | - **LOCAL_QUORUM** - Majority within local DC (better latency)
 
-|------------|---------------|- **ALL** - All replicas (highest consistency, lowest availability)
+ | ------------ | --------------- | - **ALL** - All replicas (highest consistency, lowest availability)
 
-| Single sensor, 1 hour | 20-40 ms |- **ONE** - Single replica (best performance, lowest consistency)
+ | Single sensor, 1 hour | 20-40 ms | - **ONE** - Single replica (best performance, lowest consistency)
 
-| Single sensor, 24 hours | 50-100 ms |
+ | Single sensor, 24 hours | 50-100 ms | 
 
-| Single sensor, 1 week | 150-300 ms |### Multi-Datacenter Replication
+ | Single sensor, 1 week | 150-300 ms | ### Multi-Datacenter Replication
 
-| Multi-sensor (10), 1 hour | 100-200 ms |
+ | Multi-sensor (10), 1 hour | 100-200 ms | 
 
 ```yaml
 
@@ -816,7 +829,6 @@ VALUES ('racka01_power', 'Rack_A01_Power_Consumption_Sensor', 'power', '2025-10-
     CASSANDRA_DC: "DC1"
 
 ---    CASSANDRA_SEEDS: "cassandra-dc1-node1,cassandra-dc2-node1"
-
 
 
 ## PostgreSQL Metadata Storecassandra-dc1-node2:
@@ -841,20 +853,20 @@ Username: postgres    CASSANDRA_DC: "DC2"
 
 Password: postgres    CASSANDRA_SEEDS: "cassandra-dc1-node1,cassandra-dc2-node1"
 
-``````
-
+```
 
 
 **Metadata Tables**:### Backup & Recovery
 
 - `device`: Sensor device entities
 
-- `asset`: Logical groupings (racks, rooms)```bash
+- `asset`: Logical groupings (racks, rooms)
+
+```bash
 
 - `entity_relation`: Relationships between entities# Create snapshot
 
 - `alarm`: Alarm configurationsdocker-compose -f docker-compose.bldg3.yml exec cassandra nodetool snapshot telemetry_bldg3
-
 
 
 **Example Query** (get all CRAC units):# List snapshots
@@ -909,7 +921,8 @@ WITH compaction = {
 
 };
 
-```sparql```
+```sparql
+```
 
 PREFIX brick: <https://brickschema.org/schema/Brick#>
 
@@ -929,7 +942,9 @@ WHERE {- Efficient disk usage
 
 }
 
-ORDER BY ?crac ?sensor```yaml
+ORDER BY ?crac ?sensor
+
+```yaml
 
 ```# Production memory configuration
 
@@ -943,8 +958,9 @@ environment:
 
   CASSANDRA_MEMTABLE_OFFHEAP_SPACE_IN_MB: "2048"
 
-#### Query 2: Get All UPS Battery Status Sensors```
+#### Query 2: Get All UPS Battery Status Sensors
 
+```
 
 
 ```sparql### Monitoring Commands
@@ -974,7 +990,6 @@ ORDER BY ?upsnodetool compactionstats
 # Table statistics
 
 **Results**: 10 UPS unitsnodetool tablestats telemetry_bldg3.sensor_data
-
 
 
 ---# Node info
@@ -1008,7 +1023,6 @@ WHERE {### Data Center-Specific Analytics
 ORDER BY ?rack- Rack-level thermal mapping
 
 ```- Anomaly detection for temperature spikes
-
 
 
 **Results**: 40 racks**Power Analysis:**
@@ -1128,7 +1142,6 @@ UPS 10 → UPS_10_Battery_Charge_Level_Sensor (match: 100%)        'method': 'is
 **Action Server** fetches data for all 10 UPS battery sensors in parallel.)
 
 
-
 ---# Alarm correlation analysis
 
 response = requests.post(
@@ -1149,7 +1162,9 @@ response = requests.post(
 
 services:)
 
-  # Cassandra database```
+  # Cassandra database
+
+```
 
   cassandra:
 
@@ -1291,7 +1306,9 @@ services:)
 
     build:        return []
 
-      context: ./rasa-bldg3```
+      context: ./rasa-bldg3
+
+```
 
       dockerfile: Dockerfile.rasa
 
@@ -1369,12 +1386,13 @@ services:)
 
     volumes:
 
-      - ./rasa-ui/shared_data:/app/shared_data```powershell
+      - ./rasa-ui/shared_data:/app/shared_data
+
+```powershell
 
     networks:# Check Cassandra status
 
       - rasa-networkdocker-compose -f docker-compose.bldg3.yml exec cassandra nodetool status
-
 
 
   # Decider service (shared)# Check connectivity
@@ -1401,7 +1419,9 @@ services:)
 
     image: python:3.10-slim
 
-    container_name: http_server```bash
+    container_name: http_server
+
+```bash
 
     command: python -m http.server 8080# Cassandra stress test
 
@@ -1485,7 +1505,9 @@ docker compose -f docker-compose.bldg3.yml up -d# Optimize table
 
 1. Cassandra + PostgreSQL start first (5-10 seconds)**Problem: High disk usage**
 
-2. Fuseki, microservices, decider, HTTP server start (parallel)```bash
+2. Fuseki, microservices, decider, HTTP server start (parallel)
+
+```bash
 
 3. Action server waits for Cassandra + PostgreSQL + Fuseki# Check disk usage
 
@@ -1503,7 +1525,9 @@ docker compose -f docker-compose.bldg3.yml up -d# Optimize table
 
 cqlsh localhost 9042  # Cassandra (cqlsh client required)# Data expires automatically with TTL set
 
-psql -h localhost -p 5434 -U postgres -d thingsboard  # PostgreSQL```
+psql -h localhost -p 5434 -U postgres -d thingsboard  # PostgreSQL
+
+```
 
 curl http://localhost:3030/$/ping  # Fuseki
 
@@ -1522,9 +1546,7 @@ curl http://localhost:3000  # Frontend- [Data Center Best Practices](/docs/datac
 ```- [Multi-Building Support](/docs/multi_building/) - Switching between buildings
 
 
-
 ---## Support & Resources
-
 
 
 ## Use Cases & Applications- **Cassandra Documentation**: [cassandra.apache.org](https://cassandra.apache.org/doc/)
@@ -1637,29 +1659,29 @@ curl http://localhost:3000  # Frontend- [Data Center Best Practices](/docs/datac
 
 **Cassandra Queries** (single sensor):
 
-| Time Range | Records | Response Time |
-|------------|---------|---------------|
-| 1 hour | 120 | 20-40 ms |
-| 24 hours | 2,880 | 50-100 ms |
-| 1 week | 20,160 | 150-300 ms |
-| 1 month | 86,400 | 400-800 ms |
+ | Time Range | Records | Response Time | 
+ | ------------ | --------- | --------------- | 
+ | 1 hour | 120 | 20-40 ms | 
+ | 24 hours | 2,880 | 50-100 ms | 
+ | 1 week | 20,160 | 150-300 ms | 
+ | 1 month | 86,400 | 400-800 ms | 
 
 **Multi-Sensor Queries** (10 sensors):
 
-| Time Range | Total Records | Response Time |
-|------------|---------------|---------------|
-| 1 hour | 1,200 | 100-200 ms |
-| 24 hours | 28,800 | 300-600 ms |
-| 1 week | 201,600 | 1-2 seconds |
+ | Time Range | Total Records | Response Time | 
+ | ------------ | --------------- | --------------- | 
+ | 1 hour | 1,200 | 100-200 ms | 
+ | 24 hours | 28,800 | 300-600 ms | 
+ | 1 week | 201,600 | 1-2 seconds | 
 
 **Analytics Processing**:
 
-| Analysis Type | Data Points | Processing Time |
-|---------------|-------------|-----------------|
-| Summary statistics | 2,880 | <1 second |
-| Trend analysis | 20,160 | 2-4 seconds |
-| Anomaly detection | 86,400 | 6-10 seconds |
-| Forecasting (ARIMA) | 20,160 | 12-20 seconds |
+ | Analysis Type | Data Points | Processing Time | 
+ | --------------- | ------------- | ----------------- | 
+ | Summary statistics | 2,880 | <1 second | 
+ | Trend analysis | 20,160 | 2-4 seconds | 
+ | Anomaly detection | 86,400 | 6-10 seconds | 
+ | Forecasting (ARIMA) | 20,160 | 12-20 seconds | 
 
 ---
 
